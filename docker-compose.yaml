@@ -1,0 +1,13 @@
+version: '2'
+
+services:
+  openresty:
+    image: openresty/openresty:latest-xenial
+    ports:
+      - "80:80"
+    volumes:
+      - "./nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf"
+      - "./src:/code"
+    environment:
+      BITBUCKET_MATTERMOST_URL: '<bitbucket-mattermost-hook-url>'
+      SENTRY_MATTERMOST_URL: '<sentry-mattermost-hook-url>'
