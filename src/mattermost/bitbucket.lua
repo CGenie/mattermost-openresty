@@ -9,6 +9,10 @@ if not mattermost_url then
     ngx.say("BITBUCKET_MATTERMOST_URL env variable not defined")
     return
 end
+local username = os.getenv("BITBUCKET_MATTERMOST_USER")
+if not username then
+    username = 'bitbucket'
+end
 
 ngx.req.read_body()
 local data_ = ngx.req.get_body_data()
@@ -51,7 +55,7 @@ ngx.say('message: ', message)
 
 --local body = 'payload=' .. cjson.encode({text=message})
 --local body = cjson.encode({payload={text=message}})
-local body = cjson.encode({text=message})
+local body = cjson.encode({text=message, username=username})
 
 local res, err = hc:request_uri(mattermost_url, {
     method="POST",
