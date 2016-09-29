@@ -3,8 +3,8 @@ version: '2'
 services:
   openresty:
     build: ./
-    ports:
-      - "80:80"
+    #ports:
+    #  - "80:80"
     volumes:
       - "./nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf"
       - "./src:/code"
