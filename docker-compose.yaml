@@ -10,4 +10,6 @@ services:
       - "./src:/code"
     environment:
       BITBUCKET_MATTERMOST_URL: '<bitbucket-mattermost-hook-url>'
+      BITBUCKET_MATTERMOST_USER: 'bitbucket'
       SENTRY_MATTERMOST_URL: '<sentry-mattermost-hook-url>'
+      SENTRY_MATTERMOST_USER: 'sentry'
