@@ -1,8 +1,7 @@
 -- curl -i -X POST -d 'payload={"text": "Hello, this is some text.\nThis is more text."}' http://yourmattermost.com/hooks/xxx-generatedkey-xxx
 
+local tools = require "tools"
 local cjson = require "cjson"
-local http = require "resty.http"
-local hc = http:new()
 
 local mattermost_url = os.getenv("SENTRY_MATTERMOST_URL")
 if not mattermost_url then
@@ -14,32 +13,17 @@ if not username then
     username = 'sentry'
 end
 
-ngx.req.read_body()
-local data_ = ngx.req.get_body_data()
-if not data_ then
-    local fpath = ngx.req.get_body_file()
-    local f = io.open(fpath, 'r')
-    data_ = f:read()
-    f:close()
-end
-
+local data_ = tools.get_ngx_data()
 local data = cjson.decode(data_)
 local message = '**' .. data.project_name .. '** :: ' .. data.level .. ' :: [' .. data.message .. '](' .. data.url .. ')'
 
 ngx.say('message: ', message)
 
---local body = 'payload=' .. cjson.encode({text=message})
---local body = cjson.encode({payload={text=message}})
-local body = cjson.encode({text=message, username=username})
-
-local res, err = hc:request_uri(mattermost_url, {
-    method="POST",
-    body=body,
-    headers = {
-      ["Content-Type"] = "application/json",
-    },
-    ssl_verify=false
-})
+local res, err = tools.send_mattermost_message(
+  mattermost_url,
+  message,
+  username
+)
 
 ngx.say(
     "url:\n", mattermost_url,

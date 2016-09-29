@@ -2,7 +2,7 @@ version: '2'
 
 services:
   openresty:
-    image: openresty/openresty:latest-xenial
+    build: ./
     ports:
       - "80:80"
     volumes:
