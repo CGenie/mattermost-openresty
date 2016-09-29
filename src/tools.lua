@@ -35,6 +35,8 @@ function mymodule.send_mattermost_message(url, text, username)
       ssl_verify=false
   })
 
+  ngx.say("\n\nsent body:\n", body)
+
   return res, err
 end
 

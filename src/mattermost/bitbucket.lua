@@ -53,7 +53,6 @@ local res, err = tools.send_mattermost_message(
 ngx.say(
     "url:\n", mattermost_url,
     --"\n\ndata:\n", data,
-    "\n\nsent body:\n", body,
     "\n\nresponse:\n", res.body,
     "\n\nerror:\n", err
 )
