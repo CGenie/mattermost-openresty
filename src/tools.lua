@@ -18,7 +18,7 @@ function mymodule.get_ngx_data()
 end
 
 function mymodule.send_mattermost_message(url, text, username)
-  local data = {text=message}
+  local data = {text=text}
   if username then
     data.username = username
   end
