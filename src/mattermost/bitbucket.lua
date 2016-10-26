@@ -21,8 +21,9 @@ local push = data.push
 if push then
     local actor = data.actor.display_name
     local new_commit = push.changes[1].new
-    local repo = new_commit.repository.full_name
-    local repo_href = new_commit.repository.links.html.href
+    local repository = data.repository
+    local repo = repository.full_name
+    local repo_href = repository.links.html.href
     local href = new_commit.target.links.html.href
     local name = new_commit.name
     message = '**[' .. repo .. '](' .. href .. ')** :: New commit from ' .. actor .. ': ' .. href .. ' (*' .. name .. '*)'
