@@ -2,7 +2,6 @@ local mymodule = {}
 
 local cjson = require "cjson"
 local http = require "resty.http"
-local hc = http:new()
 
 function mymodule.get_ngx_data()
   ngx.req.read_body()
@@ -18,6 +17,7 @@ function mymodule.get_ngx_data()
 end
 
 function mymodule.send_mattermost_message(url, text, username)
+  local hc = http:new()
   local data = {text=text}
   if username then
     data.username = username
