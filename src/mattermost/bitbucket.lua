@@ -20,13 +20,15 @@ local message = nil
 local push = data.push
 if push then
     local actor = data.actor.display_name
-    local new_commit = push.changes[1].new
     local repository = data.repository
     local repo = repository.full_name
     local repo_href = repository.links.html.href
-    local href = new_commit.target.links.html.href
+    local new_commit = push.changes[1].new
+    local target = new_commit.target
     local name = new_commit.name
-    message = '**[' .. repo .. '](' .. href .. ')** :: New commit from ' .. actor .. ': ' .. href .. ' (*' .. name .. '*)'
+    local href = target.links.html.href
+    local commit_message, num_rep = string.gsub(target.message, "\n", "")
+    message = '**[' .. repo .. '](' .. href .. ')** :: New commit from ' .. actor .. ' (*' .. name .. '*): ' .. '[' .. commit_message .. '](' .. href .. ')'
 end
 
 local pullrequest = data.pullrequest
