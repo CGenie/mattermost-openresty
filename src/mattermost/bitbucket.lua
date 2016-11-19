@@ -20,6 +20,12 @@ local message = nil
 local push = data.push
 if push then
     local actor = data.actor.display_name
+    local actor_href = data.actor.links.html.href
+    local avatar_href = data.actor.links.avatar.href
+    local avatar_message = ''
+    if avatar_href then
+        avatar_message = '![embedded image](' .. avatar_href .. ') '
+    end
     local repository = data.repository
     local repo = repository.full_name
     local repo_href = repository.links.html.href
@@ -29,7 +35,7 @@ if push then
     local branch_href = new_commit.links.html.href
     local href = target.links.html.href
     local commit_message, num_rep = string.gsub(target.message, "\n", "")
-    message = '**[' .. repo .. '](' .. href .. ')**/*[' .. branch_name .. '](' .. branch_href .. ')* :: New commit from ' .. actor .. ': ' .. '[' .. commit_message .. '](' .. href .. ')'
+    message = avatar_message .. '**[' .. repo .. '](' .. href .. ')**/*[' .. branch_name .. '](' .. branch_href .. ')* :: New commit from [' .. actor .. '](' .. actor_href .. '): ' .. '\n```\n' .. commit_message .. '\n```'
 end
 
 local pullrequest = data.pullrequest
