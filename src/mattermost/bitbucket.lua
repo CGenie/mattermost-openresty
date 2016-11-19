@@ -25,10 +25,11 @@ if push then
     local repo_href = repository.links.html.href
     local new_commit = push.changes[1].new
     local target = new_commit.target
-    local name = new_commit.name
+    local branch_name = new_commit.name
+    local branch_href = new_commit.links.html.href
     local href = target.links.html.href
     local commit_message, num_rep = string.gsub(target.message, "\n", "")
-    message = '**[' .. repo .. '](' .. href .. ')** :: New commit from ' .. actor .. ' (*' .. name .. '*): ' .. '[' .. commit_message .. '](' .. href .. ')'
+    message = '**[' .. repo .. '](' .. href .. ')**/*[' .. branch_name .. '](' .. branch_href .. ')* :: New commit from ' .. actor .. ': ' .. '[' .. commit_message .. '](' .. href .. ')'
 end
 
 local pullrequest = data.pullrequest
