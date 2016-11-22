@@ -1,1 +1,1 @@
-ngx.say('Hello world')
+ngx.say('ok')
