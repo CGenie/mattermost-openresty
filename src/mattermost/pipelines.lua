@@ -20,7 +20,11 @@ local url = commit_status.url
 local repository = data.repository
 local branch = commit_status.refname
 
-message = 'Test ' .. state .. ' for branch ' .. branch
+local repo_text = '**[' .. repository.full_name .. '](' .. repository.links.html.href .. ')**'
+local test_text = '[Test ' .. state .. '](' .. url .. ')'
+local branch_text = '_[' .. branch .. '](' .. commit_status.links.commits.href .. ')_'
+
+message = repo_text .. ' :: ' .. test_text .. ' for branch ' .. branch_text
 
 local res, err = tools.send_mattermost_message(
   mattermost_url,
