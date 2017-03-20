@@ -25,7 +25,7 @@ function mymodule.get_env_variable_with_arg(base_variable_name, arg_name, defaul
     -- Try to parse base_variable_name as a JSON string and pull variable from there
     if base_var then
         local status, ret = pcall(function() return cjson.decode(base_var) end)
-        local value = ret[arg_name] or ret['default']
+        local value = ret[ngx_var] or ret['default']
         if status and value then
             return value
         end
@@ -43,13 +43,12 @@ function mymodule.get_env_variable_with_arg(base_variable_name, arg_name, defaul
         return default
     end
 
-    ngx.say(base_variable_name " :: " .. arg_name .. " not defined")
     ngx.log(ngx.ERR, base_variable_name .. " not defined")
     if base_variable_name ~= variable_name then
         ngx.log(ngx.ERR, variable_name .. " not defined")
     end
     if base_var then
-        ngx.log(ngx.ERR, "Key " .. arg_name .. " not present in JSON " .. base_var)
+        ngx.log(ngx.ERR, "Key " .. ngx_var .. " not present in JSON " .. base_var)
     end
     ngx.log(ngx.ERR, "Default not defined")
     ngx.exit(500)
