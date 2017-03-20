@@ -29,7 +29,9 @@ about Bitbucket events will come). Start the containers and you're done!
 
 Username is `bitbucket` by default, change it via the `BITBUCKET_MATTERMOST_USER` env variable.
 
-Also, you can have multiple Bitbucket notifications being proxied to multiple rooms.
+### Multiple rooms for multiple Bitbucket configurations
+
+You can have multiple Bitbucket notifications being proxied to multiple rooms.
 Just specify `BITBUCKET_MATTERMOST_URL_ROOM1` env variable and set the bitbucket
 URL to `<openresty-host>/mattermost/bitbucket?room=room1` (uppercase env is handled automatically).
 
@@ -37,6 +39,22 @@ Same goes for `BITBUCKET_MATTERMOST_USER_USER1` being mapped to
 `<openresty-host>/mattermost/bitbucket?user=user1`.
 
 Don't forget to add your custom variables to the `nginx.conf` file!
+
+If you don't want to provide multiple variables and alter the `nginx.conf` file, there is another
+way to introduce multiple rooms. You can define a simple key-value mapping (in JSON format)
+into the `BITBUCKET_MATTERMOST_URL` and `BITBUCKET_MATTERMOST_USER` variables.
+Also, `"default"` key has the special property of returning the value whenever it
+is not found in JSON.
+
+For example:
+
+```bash
+BITBUCKET_MATTERMOST_URL='{"default": "<other-rooms>", "room1": "<room1-url>", "room2": "<room2-url>"}
+BITBUCKET_MATTERMOST_USER='{"room1": "<room1-user>", "room2": "<room2-user>"}
+```
+
+The default user is `bitbucket` but there is no default URL so if room is undefined, nginx
+will throw an exception.
 
 ## Sentry integration
 
