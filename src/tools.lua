@@ -32,7 +32,7 @@ function mymodule.get_env_variable_with_arg(base_variable_name, arg_name, defaul
     end
 
     if ngx_var then
-        variable_name = variable_name .. "_" .. ngx_var
+        variable_name = variable_name .. "_" .. ngx_var:upper()
     end
     variable_env = os.getenv(variable_name)
     if variable_env then
