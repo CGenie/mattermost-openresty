@@ -3,12 +3,23 @@
 local tools = require "tools"
 local cjson = require "cjson"
 
-local mattermost_url = os.getenv("BITBUCKET_MATTERMOST_URL")
+local mattermost_room = ngx.var.arg_room
+local url_env = "BITBUCKET_MATTERMOST_URL"
+if mattermost_room then
+    url_env = url_env .. "_" .. mattermost_room:upper()
+end
+local username_env = "BITBUCKET_MATTERMOST_USER"
+local mattermost_user = ngx.var.arg_user
+if mattermost_user then
+    username_env = username_env .. "_" .. mattermost_user:upper()
+end
+
+local mattermost_url = os.getenv(url_env)
 if not mattermost_url then
-    ngx.say("BITBUCKET_MATTERMOST_URL env variable not defined")
+    ngx.say(url_env .. " env variable not defined")
     return
 end
-local username = os.getenv("BITBUCKET_MATTERMOST_USER")
+local username = os.getenv(username_env)
 if not username then
     username = 'bitbucket'
 end
