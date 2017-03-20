@@ -29,6 +29,13 @@ about Bitbucket events will come). Start the containers and you're done!
 
 Username is `bitbucket` by default, change it via the `BITBUCKET_MATTERMOST_USER` env variable.
 
+Also, you can have multiple Bitbucket notifications being proxied to multiple rooms.
+Just specify `BITBUCKET_MATTERMOST_URL_ROOM1` env variable and set the bitbucket
+URL to `<openresty-host>/mattermost/bitbucket?room=room1` (uppercase env is handled automatically).
+
+Same goes for `BITBUCKET_MATTERMOST_USER_USER1` being mapped to
+`<openresty-host>/mattermost/bitbucket?user=user1`.
+
 ## Sentry integration
 
 In a [Sentry](https://sentry.io/welcome/) project settings, enable webhooks, then put this as the address:
