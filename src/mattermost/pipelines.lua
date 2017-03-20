@@ -8,9 +8,23 @@ local data_ = tools.get_ngx_data()
 local data = cjson.decode(data_)
 local message = nil
 
+local commit_status = data.commit_status
+
+if commit_status.type ~= 'build' then
+    ngx.log(ngx.ERR, 'This is not a build')
+    ngx.exit(400)
+end
+
+local state = commit_status.state
+local url = commit_status.url
+local repository = data.repository
+local branch = commit_status.refname
+
+message = 'Test ' .. state .. ' for branch ' .. branch
+
 local res, err = tools.send_mattermost_message(
   mattermost_url,
-  data_,
+  message,
   username
 )
 
