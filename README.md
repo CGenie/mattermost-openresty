@@ -36,6 +36,8 @@ URL to `<openresty-host>/mattermost/bitbucket?room=room1` (uppercase env is hand
 Same goes for `BITBUCKET_MATTERMOST_USER_USER1` being mapped to
 `<openresty-host>/mattermost/bitbucket?user=user1`.
 
+Don't forget to add your custom variables to the `nginx.conf` file!
+
 ## Sentry integration
 
 In a [Sentry](https://sentry.io/welcome/) project settings, enable webhooks, then put this as the address:
