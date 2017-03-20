@@ -22,7 +22,7 @@ local branch = commit_status.refname
 
 local repo_text = '**[' .. repository.full_name .. '](' .. repository.links.html.href .. ')**'
 local test_text = '[Test ' .. state .. '](' .. url .. ')'
-local branch_text = '_[' .. branch .. '](' .. commit_status.links.commits.href .. ')_'
+local branch_text = '_[' .. branch .. '](' .. commit_status.links.commit.href .. ')_'
 
 message = repo_text .. ' :: ' .. test_text .. ' for branch ' .. branch_text
 
