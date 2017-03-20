@@ -3,13 +3,13 @@
 local tools = require "tools"
 local cjson = require "cjson"
 
-local mattermost_room = ngx.var.room
+local mattermost_room = ngx.var.arg_room
 local url_env = "BITBUCKET_MATTERMOST_URL"
 if mattermost_room then
     url_env = url_env .. "_" .. mattermost_room:upper()
 end
 local username_env = "BITBUCKET_MATTERMOST_USER"
-local mattermost_user = ngx.var.user
+local mattermost_user = ngx.var.arg_user
 if mattermost_user then
     username_env = username_env .. "_" .. mattermost_user:upper()
 end
