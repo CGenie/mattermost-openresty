@@ -19,22 +19,23 @@ end
 function mymodule.get_env_variable_with_arg(base_variable_name, arg_name, default)
     local ngx_var = ngx.var["arg_" .. arg_name]
     local variable_name = base_variable_name
-    local base_var = nil
+    local variable_env = nil
+    local base_var = os.getenv(base_variable_name)
+
+    -- Try to parse base_variable_name as a JSON string and pull variable from there
+    if base_var then
+        local status, ret = pcall(function() return cjson.decode(base_var) end)
+        if status and ret[arg_name] then
+            return ret[arg_name]
+        end
+    end
+
     if ngx_var then
         variable_name = variable_name .. "_" .. ngx_var
     end
-    local variable_env = os.getenv(variable_name)
+    variable_env = os.getenv(variable_name)
     if variable_env then
         return variable_env
-    end
-
-    -- Try to parse base_variable_name as a JSON string and pull variable from there
-    local base_var = os.getenv(base_variable_name)
-    if base_var then
-        local status, ret = pcall(function() return cjson.decode(base_var) end)
-        if status then
-            return status[arg_name]
-        end
     end
 
     if default then
