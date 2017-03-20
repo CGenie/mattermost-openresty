@@ -49,8 +49,8 @@ is not found in JSON.
 For example:
 
 ```bash
-BITBUCKET_MATTERMOST_URL='{"default": "<other-rooms>", "room1": "<room1-url>", "room2": "<room2-url>"}
-BITBUCKET_MATTERMOST_USER='{"room1": "<room1-user>", "room2": "<room2-user>"}
+BITBUCKET_MATTERMOST_URL='{"default": "<other-rooms>", "room1": "<room1-url>", "room2": "<room2-url>"}'
+BITBUCKET_MATTERMOST_USER='{"room1": "<room1-user>", "room2": "<room2-user>"}'
 ```
 
 The default user is `bitbucket` but there is no default URL so if room is undefined, nginx
