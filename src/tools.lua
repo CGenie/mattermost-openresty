@@ -25,8 +25,9 @@ function mymodule.get_env_variable_with_arg(base_variable_name, arg_name, defaul
     -- Try to parse base_variable_name as a JSON string and pull variable from there
     if base_var then
         local status, ret = pcall(function() return cjson.decode(base_var) end)
-        if status and ret[arg_name] then
-            return ret[arg_name]
+        local value = ret[arg_name] or ret['default']
+        if status and value then
+            return value
         end
     end
 

@@ -43,10 +43,13 @@ Don't forget to add your custom variables to the `nginx.conf` file!
 If you don't want to provide multiple variables and alter the `nginx.conf` file, there is another
 way to introduce multiple rooms. You can define a simple key-value mapping (in JSON format)
 into the `BITBUCKET_MATTERMOST_URL` and `BITBUCKET_MATTERMOST_USER` variables.
+Also, `"default"` key has the special property of returning the value whenever it
+is not found in JSON.
+
 For example:
 
 ```bash
-BITBUCKET_MATTERMOST_URL='{"room1": "<room1-url>", "room2": "<room2-url>"}
+BITBUCKET_MATTERMOST_URL='{"default": "<other-rooms>", "room1": "<room1-url>", "room2": "<room2-url>"}
 BITBUCKET_MATTERMOST_USER='{"room1": "<room1-user>", "room2": "<room2-user>"}
 ```
 
