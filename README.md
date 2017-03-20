@@ -19,7 +19,7 @@ If you want to add custom config, best is to use the `docker-compose.override.ym
 
 ## Bitbucket webhooks support
 
-In Bitbucket, go to project Settings -> Integrations Services -> Add webhook. As the webhook URL enter
+In Bitbucket, go to project `Settings -> Webhooks -> Add webhook`. As the webhook URL enter
 ```
 <openresty-host>/mattermost/bitbucket
 ```
@@ -55,6 +55,15 @@ BITBUCKET_MATTERMOST_USER='{"room1": "<room1-user>", "room2": "<room2-user>"}'
 
 The default user is `bitbucket` but there is no default URL so if room is undefined, nginx
 will throw an exception.
+
+## Bitbucket Pipelines support
+
+We also support update notifications from Bitbucket Pipelines. To add the Webhook, go to
+your repository settings on Bitbucket, select `Webhooks -> Add Webhook` and then make sure
+to pick `Choose from a full list of triggers -> Build status updated`.
+
+Environment variables are `PIPELINES_MATTERMOST_URL` and `PIPELINES_MATTERMOST_USER` and
+they behave in exactly the same way as variables for the Bitbucket integration.
 
 ## Sentry integration
 
