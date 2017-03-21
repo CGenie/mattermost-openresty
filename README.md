@@ -75,3 +75,6 @@ Again, create an Incoming webhook in Mattermost and save in `docker-compose.yml`
 `SENTRY_MATTERMOST_URL` variable.
 
 Username is `sentry` by default, change it via the `SENTRY_MATTERMOST_USER` env variable.
+
+Same logic applies for the `SENTRY_MATTERMOST_URL` and `SENTRY_MATTERMOST_USER` variables
+for multi-room configuration as above.

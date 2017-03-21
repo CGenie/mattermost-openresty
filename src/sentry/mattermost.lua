@@ -3,15 +3,8 @@
 local tools = require "tools"
 local cjson = require "cjson"
 
-local mattermost_url = os.getenv("SENTRY_MATTERMOST_URL")
-if not mattermost_url then
-    ngx.say("SENTRY_MATTERMOST_URL env variable not defined")
-    return
-end
-local username = os.getenv("SENTRY_MATTERMOST_USER")
-if not username then
-    username = 'sentry'
-end
+local mattermost_url = tools.get_env_variable_with_arg('SENTRY_MATTERMOST_URL', 'room', nil)
+local mattermost_user = tools.get_env_variable_with_arg('SENTRY_MATTERMOST_USER', 'user', 'sentry')
 
 local data_ = tools.get_ngx_data()
 local data = cjson.decode(data_)
@@ -22,7 +15,7 @@ ngx.say('message: ', message)
 local res, err = tools.send_mattermost_message(
   mattermost_url,
   message,
-  username
+  mattermost_user
 )
 
 ngx.say(
