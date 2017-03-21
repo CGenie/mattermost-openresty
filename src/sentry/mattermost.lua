@@ -3,8 +3,8 @@
 local tools = require "tools"
 local cjson = require "cjson"
 
-local sentry_url = tools.get_env_variable_with_arg('SENTRY_MATTERMOST_URL', 'room', nil)
-local sentry_user = tools.get_env_variable_with_arg('SENTRY_MATTERMOST_USER', 'user', 'sentry')
+local mattermost_url = tools.get_env_variable_with_arg('SENTRY_MATTERMOST_URL', 'room', nil)
+local mattermost_user = tools.get_env_variable_with_arg('SENTRY_MATTERMOST_USER', 'user', 'sentry')
 
 local data_ = tools.get_ngx_data()
 local data = cjson.decode(data_)
@@ -15,7 +15,7 @@ ngx.say('message: ', message)
 local res, err = tools.send_mattermost_message(
   mattermost_url,
   message,
-  sentry_user
+  mattermost_user
 )
 
 ngx.say(
