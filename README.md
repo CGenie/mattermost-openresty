@@ -1,3 +1,12 @@
+# Table of Contents
+
+   * [Mattermost Openresty bridge](#mattermost-openresty-bridge)
+      * [Installation](#installation)
+      * [Bitbucket webhooks support](#bitbucket-webhooks-support)
+         * [Multiple rooms for multiple Bitbucket configurations](#multiple-rooms-for-multiple-bitbucket-configurations)
+      * [Bitbucket Pipelines support](#bitbucket-pipelines-support)
+      * [Sentry integration](#sentry-integration)
+
 # Mattermost Openresty bridge
 
 This is a bridge between [Mattermost](https://openresty.org/en/) and various other services,
