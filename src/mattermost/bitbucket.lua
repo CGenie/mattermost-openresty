@@ -53,9 +53,4 @@ local res, err = tools.send_mattermost_message(
   username
 )
 
-ngx.say(
-    "url:\n", mattermost_url,
-    --"\n\ndata:\n", data,
-    "\n\nresponse:\n", res.body,
-    "\n\nerror:\n", err
-)
+ngx.say(cjson.encode({status='ok'}))

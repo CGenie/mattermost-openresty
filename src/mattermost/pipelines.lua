@@ -32,4 +32,4 @@ local res, err = tools.send_mattermost_message(
   username
 )
 
-ngx.log(ngx.ERR, data_)
+ngx.say(cjson.encode({status='ok'}))
