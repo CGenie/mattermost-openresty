@@ -27,7 +27,8 @@ if push then
     local branch_name = new_commit.name
     local branch_href = new_commit.links.html.href
     local href = target.links.html.href
-    local commit_message, num_rep = string.gsub(target.message, "\n", "")
+    --local commit_message, num_rep = string.gsub(target.message, "\n", "")
+    local commit_message = target.message
     message = avatar_message .. '**[' .. repo .. '](' .. href .. ')**/*[' .. branch_name .. '](' .. branch_href .. ')* :: New commit from [' .. actor .. '](' .. actor_href .. '): ' .. '\n```\n' .. commit_message .. '\n```'
 end
 
