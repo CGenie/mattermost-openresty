@@ -1,4 +1,4 @@
-FROM openresty/openresty:latest-xenial
+FROM openresty/openresty:alpine-fat
 MAINTAINER Przemek <cgenie@gmail.com>
 
 RUN /usr/local/openresty/luajit/bin/luarocks install lua-resty-http
