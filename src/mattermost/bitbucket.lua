@@ -46,6 +46,7 @@ local comment = data.comment
 if comment then
     local content = comment.content.raw
     local repository = data.repository
+    local repo = repository.full_name
     local repo_href = repository.links.html.href
     local commit_hash = comment.commit.hash
     local commit_href = comment.commit.links.html.href
