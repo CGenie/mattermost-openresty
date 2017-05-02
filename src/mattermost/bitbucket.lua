@@ -42,6 +42,18 @@ if pullrequest then
     message = '**[' .. repo .. '](' .. href .. ')** :: New pull request from ' .. actor .. ': ' .. href .. ' (*' .. title .. '*)'
 end
 
+local comment = data.comment
+if comment then
+    local content = comment.content.raw
+    local repository = data.repository
+    local repo_href = repository.links.html.href
+    local commit_hash = comment.commit.hash
+    local commit_href = comment.commit.links.html.href
+    local user = comment.user.display_name
+    local user_href = comment.user.links.html.href
+    message = '**[' .. repo .. '](' .. repo_href .. ')**/*[' .. commit_hash .. '](' .. commit_href .. ') :: New comment from [' .. user .. '](' .. user_href .. '):\n' .. content
+end
+
 if not message then
     message = 'This is not implemented yet: ' .. data_
 end
