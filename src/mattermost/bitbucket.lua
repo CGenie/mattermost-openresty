@@ -52,7 +52,7 @@ if comment then
     local commit_href = comment.commit.links.html.href
     local user = comment.user.display_name
     local user_href = comment.user.links.html.href
-    message = '**[' .. repo .. '](' .. repo_href .. ')**/*[' .. commit_hash .. '](' .. commit_href .. ') :: New comment from [' .. user .. '](' .. user_href .. '):\n' .. content
+    message = '**[' .. repo .. '](' .. repo_href .. ')**/*[' .. commit_hash .. '](' .. commit_href .. ')* :: New comment from [' .. user .. '](' .. user_href .. '):\n' .. content
 end
 
 if not message then
