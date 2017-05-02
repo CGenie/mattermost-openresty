@@ -49,11 +49,25 @@ if comment then
     local repository = data.repository
     local repo = repository.full_name
     local repo_href = repository.links.html.href
-    local commit_hash = comment.commit.hash
-    local commit_href = comment.commit.links.html.href
     local user = comment.user.display_name
     local user_href = comment.user.links.html.href
-    message = '**[' .. repo .. '](' .. repo_href .. ')**/*[' .. commit_hash .. '](' .. commit_href .. ')* :: [New comment](' .. comment_href .. ') from [' .. user .. '](' .. user_href .. '):\n' .. content
+
+    -- now question is whether the comment is for pull request or for commit
+    local commit = comment.commit
+    if commit then
+        local commit_hash = comment.commit.hash
+        local commit_href = comment.commit.links.html.href
+        local user = comment.user.display_name
+        local user_href = comment.user.links.html.href
+        message = '**[' .. repo .. '](' .. repo_href .. ')**/*[' .. commit_hash .. '](' .. commit_href .. ')* :: [New comment](' .. comment_href .. ') from [' .. user .. '](' .. user_href .. '):\n' .. content
+    end
+
+    local pull_request = comment.pullrequest
+    if pull_request then
+        local title = pull_request.title
+        local pull_request_href = pullrequest.links.html.href
+        message = '**[' .. repo .. '](' .. repo_href .. ')**/*[PR ' .. title .. '](' .. pull_request_href .. ')* :: [New comment](' .. comment_href .. ') from [' .. user .. '](' .. user_href .. '):\n' .. content
+    end
 end
 
 if not message then
