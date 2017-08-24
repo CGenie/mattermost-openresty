@@ -13,3 +13,5 @@ services:
       BITBUCKET_MATTERMOST_USER: 'bitbucket'
       SENTRY_MATTERMOST_URL: '<sentry-mattermost-hook-url>'
       SENTRY_MATTERMOST_USER: 'sentry'
+      TEAMCITY_MATTERMOST_URL: '<teamcity-mattermost-hook-url>'
+      TEAMCITY_MATTERMOST_USER: 'teamcity'
