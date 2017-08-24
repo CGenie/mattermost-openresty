@@ -1,7 +1,7 @@
 -- curl -i -X POST -d 'payload={"text": "Hello, this is some text.\nThis is more text."}' http://yourmattermost.com/hooks/xxx-generatedkey-xxx
 
 local cjson = require "cjson"
-local template = require "template"
+local template = require "resty.template"
 local tools = require "tools"
 
 local mattermost_url = tools.get_env_variable_with_arg('SENTRY_MATTERMOST_URL', 'room', nil)
