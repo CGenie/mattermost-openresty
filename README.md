@@ -93,3 +93,33 @@ for multi-room configuration as above.
 ## TeamCity integration
 
 You need the [teamcity-webhooks plugin](https://github.com/evgeny-goldin/teamcity-webhooks).
+
+Create an Incoming hook in Mattermost, save it in `docker-compose.yml` under the
+`TEAMCITY_MATTERMOST_URL` variable.
+
+Now, to set up TeamCity this is what I did: I created a dummy project, inside it a simple build
+configuration with the following script contents:
+
+```bash
+#!/bin/bash
+
+echo "%teamcity.build.triggeredBy%"
+
+curl "<mattermost-openresty-server-url>" -XPOST -d '{"triggeredBy": "%teamcity.build.triggeredBy%"}'
+```
+
+For build Triggers, I add all build configurations that I want to watch. Unfortunately, our dummy
+build will only get the variable `teamcity.build.triggeredBy` which has the form:
+```
+Finish Build Trigger; <project-name> :: <build-configuration>, build #8
+```
+
+So on our side, we parse that variable, and fetch all required data from the
+[TeamCity REST API](https://confluence.jetbrains.com/display/TCD10/REST+API). That's why
+you also need to specify the following variables:
+
+* `TEAMCITY_SERVER_URL` -- the URL of the TeamCity server. It probably could sent via the above
+  `curl` command but this way we get to add more fancy configuraitons (the syntax is also the
+  key-value JSON format described above).
+* `TEAMCITY_SERVER_AUTH` -- this is the base64-encoded `<username>:<password>` string for the
+  TeamCity user who has read access to the projects, build configurations and build number data.
