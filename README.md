@@ -6,6 +6,7 @@
          * [Multiple rooms for multiple Bitbucket configurations](#multiple-rooms-for-multiple-bitbucket-configurations)
       * [Bitbucket Pipelines support](#bitbucket-pipelines-support)
       * [Sentry integration](#sentry-integration)
+      * [TeamCity integration](#teamcity-integration)
 
 # Mattermost Openresty bridge
 
@@ -87,3 +88,8 @@ Username is `sentry` by default, change it via the `SENTRY_MATTERMOST_USER` env 
 
 Same logic applies for the `SENTRY_MATTERMOST_URL` and `SENTRY_MATTERMOST_USER` variables
 for multi-room configuration as above.
+
+
+## TeamCity integration
+
+You need the [teamcity-webhooks plugin](https://github.com/evgeny-goldin/teamcity-webhooks).
