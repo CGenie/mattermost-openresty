@@ -25,7 +25,7 @@ local project_data, build_configuration_data, build_number_data = tools.fetch_te
     build_number
 )
 
-local message_tmpl = template.new("[{* p.name *}]({* p.webUrl *}) :: [{* bc.name *}]({* bc.webUrl *}] :: [build #{* bn.number *}]({* bn.webUrl *}) :: **{* bn.status *}** :: `{* bn.statusText *}`")
+local message_tmpl = template.new("[{* p.name *}]({* p.webUrl *}) :: [{* bc.name *}]({* bc.webUrl *}) :: [build #{* bn.number *}]({* bn.webUrl *}) :: **{* bn.status *}** :: `{* bn.statusText *}`")
 message_tmpl.p = project_data
 message_tmpl.bc = build_configuration_data
 message_tmpl.bn = build_number_data
