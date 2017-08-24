@@ -1,44 +1,40 @@
--- Sample payload:
--- {
---     "name": "Echo :: Build",
---     "url": "http://127.0.0.1:8080/viewType.html?buildTypeId=Echo_Build",
---     "build": {
---         "full_url": "http://127.0.0.1:8080/viewLog.html?buildTypeId=Echo_Build&buildId=14",
---         "build_id": "7",
---         "status": "success",
---         "scm": {
---             "url": "https://github.com/evgeny-goldin/echo-service.git",
---             "branch": "origin/master",
---             "commit": "6bef6af1f43fb3e5e6d73f1e3332e82dae1f55d4"
---                },
---         "artifacts": {
---             "echo-service-0.0.1-SNAPSHOT.jar": {
---                 "s3": "https://s3-eu-west-1.amazonaws.com/evgenyg-bakery/Echo::Build/7/echo-service-0.0.1-SNAPSHOT.jar",
---                 "archive": "http://127.0.0.1:8080/repository/download/Echo_Build/7/echo-service-0.0.1-SNAPSHOT.jar"
---             }
---         }
---     }
--- }
-
 local tools = require "tools"
 local cjson = require "cjson"
 
 local teamcity_url = tools.get_env_variable_with_arg('TEAMCITY_MATTERMOST_URL', 'room', nil)
 local teamcity_user = tools.get_env_variable_with_arg('TEAMCITY_MATTERMOST_USER', 'user', 'teamcity')
+local teamcity_server_url = tools.get_env_variable_with_arg('TEAMCITY_SERVER_URL', 'teamcity_server', nil)
+local teamcity_server_auth = tools.get_env_variable_with_arg('TEAMCITY_SERVER_AUTH', 'teamcity_auth', nil)
 
 local data_ = tools.get_ngx_data()
 local data = cjson.decode(data_)
---local message = '**' .. data.project_name .. '** :: ' .. data.level .. ' :: [' .. data.message .. '](' .. data.url .. ')'
---local message = '**' .. data.name .. '** :: [' .. data.build.status .. '](' .. data.build.full_url .. ')'
 local triggered_by = data.triggeredBy
-local message = '**' .. triggeredBy .. '**'
+
+-- parse triggered_by message which is of the following format:
+-- Finish Build Trigger; <project-name> :: <build-configuration>, build #8
+local trigger_type, project_config = string.match(triggered_by, "(.*); (.*)")
+local project_name, build_configuration, build_number = string.match(project_config, "(.*) :: (.*), build #([0-9]+)")
+
+-- Now fetch teamcity build information
+local project_data, build_configuration_data, build_number_data = tools.fetch_teamcity_build_data(
+    teamcity_server_url,
+    teamcity_server_auth,
+    project_name,
+    build_configuration,
+    build_number
+)
+
+local project_message = '**[' .. project_data.name .. '](' .. project_data.webUrl .. ')**'
+local build_configuration_message = '[' .. build_configuration_data.name .. '](' .. build_configuration_data.webUrl .. ')'
+local build_number_message = '[build #' .. build_number_data.number .. '](' .. build_number_data.webUrl .. ') :: **' .. build_number_data.status .. '** :: `' .. build_number_data.statusText .. '`'
+local message = project_message .. ' :: ' .. build_configuration_message .. ' :: ' .. build_number_message
 
 ngx.say('message: ', message)
 
 local res, err = tools.send_mattermost_message(
-  mattermost_url,
+  teamcity_url,
   message,
-  mattermost_user
+  teamcity_user
 )
 
 ngx.say(cjson.encode({status='ok'}))

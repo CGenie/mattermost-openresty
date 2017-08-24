@@ -78,4 +78,79 @@ function mymodule.send_mattermost_message(url, text, username)
     return res, err
 end
 
+function mymodule.fetch_teamcity_build_data(server_url, auth, project_name, build_configuration_name, build_number)
+    local hc = http:new()
+
+    local project_data_, project_data_err_ = hc:request_uri(
+        server_url .. '/app/rest/projects/id:' .. project_name, {
+            method='GET',
+            headers={
+                ["Accept"] = "application/json",
+                ["Authorization"] = "Basic " .. auth
+            },
+            ssl_verify=false
+        }
+    )
+
+    local project_data = cjson.decode(project_data_.body)
+    local build_type = nil;
+
+    for idx, bt in pairs(project_data.buildTypes.buildType) do
+        if bt.name == build_configuration_name then
+            build_type = bt
+            break
+        end
+    end
+
+    local build_configuration_data_, build_configuration_data_err_ = hc:request_uri(
+        server_url .. build_type.href, {
+            method='GET',
+            headers={
+                ["Accept"] = "application/json",
+                ["Authorization"] = "Basic " .. auth
+            },
+            ssl_verify=false
+        }
+    )
+
+    local build_configuration_data = cjson.decode(build_configuration_data_.body)
+
+    local build_data_, build_data_err_ = hc:request_uri(
+        server_url .. '/app/rest/builds?buildTypeId=' .. build_configuration_data.id, {
+            method='GET',
+            headers={
+                ["Accept"] = "application/json",
+                ["Authorization"] = "Basic " .. auth
+            },
+            ssl_verify=false
+        }
+    )
+
+    local build_data = cjson.decode(build_data_.body)
+
+    local build_number_id = nil
+
+    for idx, bnd in pairs(build_data.build) do
+        if bnd.number == build_number then
+            build_number_id = bnd.id
+            break
+        end
+    end
+
+    local build_number_data_, build_number_data_err_ = hc:request_uri(
+        server_url .. '/app/rest/builds/id:' .. build_number_id, {
+            method='GET',
+            headers={
+                ["Accept"] = "application/json",
+                ["Authorization"] = "Basic " .. auth
+            },
+            ssl_verify=false
+        }
+    )
+
+    local build_number_data = cjson.decode(build_number_data_.body)
+
+    return project_data, build_configuration_data, build_number_data
+end
+
 return mymodule
