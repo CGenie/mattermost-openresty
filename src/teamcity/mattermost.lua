@@ -1,5 +1,6 @@
-local tools = require "tools"
 local cjson = require "cjson"
+local tools = require "tools"
+local template = require 'resty.template'
 
 local teamcity_url = tools.get_env_variable_with_arg('TEAMCITY_MATTERMOST_URL', 'room', nil)
 local teamcity_user = tools.get_env_variable_with_arg('TEAMCITY_MATTERMOST_USER', 'user', 'teamcity')
@@ -24,10 +25,11 @@ local project_data, build_configuration_data, build_number_data = tools.fetch_te
     build_number
 )
 
-local project_message = '**[' .. project_data.name .. '](' .. project_data.webUrl .. ')**'
-local build_configuration_message = '[' .. build_configuration_data.name .. '](' .. build_configuration_data.webUrl .. ')'
-local build_number_message = '[build #' .. build_number_data.number .. '](' .. build_number_data.webUrl .. ') :: **' .. build_number_data.status .. '** :: `' .. build_number_data.statusText .. '`'
-local message = project_message .. ' :: ' .. build_configuration_message .. ' :: ' .. build_number_message
+local message_tmpl = template.new("[{* p.name *}]({* p.webUrl *}) :: [{* bc.name *}]({* bc.webUrl *}] :: [build #{* bn.number *}]({* bn.webUrl *}) :: **{* bn.status *}** :: `{* bn.statusText *}`")
+message_tmpl.p = project_data
+message_tmpl.bc = build_configuration_data
+message_tmpl.bn = build_number_data
+local message = tostring(message_tmpl)
 
 ngx.say('message: ', message)
 

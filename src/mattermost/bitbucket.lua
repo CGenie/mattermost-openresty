@@ -1,7 +1,8 @@
 -- curl -i -X POST -d 'payload={"text": "Hello, this is some text.\nThis is more text."}' http://yourmattermost.com/hooks/xxx-generatedkey-xxx
 
-local tools = require "tools"
 local cjson = require "cjson"
+local template = require "resty.template"
+local tools = require "tools"
 
 local mattermost_url = tools.get_env_variable_with_arg('BITBUCKET_MATTERMOST_URL', 'room', nil)
 local mattermost_user = tools.get_env_variable_with_arg('BITBUCKET_MATTERMOST_USER', 'user', 'bitbucket')
@@ -9,37 +10,37 @@ local mattermost_user = tools.get_env_variable_with_arg('BITBUCKET_MATTERMOST_US
 local data_ = tools.get_ngx_data()
 local data = cjson.decode(data_)
 local message = nil
+local actor_tmpl = template.new("{% if actor.links.avatar.href then %}![embedded image]({* actor.links.avatar.href *}) {% end %}")
+local actor_display_tmpl = template.new("[{* actor.display_name *}]({* actor.links.html.href *})")
+local push_tmpl = template.new([[
+{* actor_tmpl *} **[{* repo.full_name *}]({* repo.links.html.href *})**/*[{* new_commit.name *}]({* new_commit.links.html.href *})* :: New commit from {* actor_display_tmpl *}:
+```
+{* new_commit.target.message *}
+```
+]])
+push_tmpl.actor_tmpl = actor_tmpl
+push_tmpl.actor_display_tmpl = actor_display_tmpl
+local pullrequest_tmpl = template.new([[
+{* actor_tmpl *} **[{* repo.full_name *}]({* repo.links.html.href *})** :: New pull request from {* actor_display_tmpl *}: *[{* pullrequest.title *}]({* pullrequest.links.html.href *})* ]])
+pullrequest_tmpl.actor_tmpl = actor_tmpl
+pullrequest_tmpl.actor_display_tmpl = actor_display_tmpl
 
 local push = data.push
 if push then
-    local actor = data.actor.display_name
-    local actor_href = data.actor.links.html.href
-    local avatar_href = data.actor.links.avatar.href
-    local avatar_message = ''
-    if avatar_href then
-        avatar_message = '![embedded image](' .. avatar_href .. ') '
-    end
-    local repository = data.repository
-    local repo = repository.full_name
-    local repo_href = repository.links.html.href
-    local new_commit = push.changes[1].new
-    local target = new_commit.target
-    local branch_name = new_commit.name
-    local branch_href = new_commit.links.html.href
-    local href = target.links.html.href
-    --local commit_message, num_rep = string.gsub(target.message, "\n", "")
-    local commit_message = target.message
-    message = avatar_message .. '**[' .. repo .. '](' .. href .. ')**/*[' .. branch_name .. '](' .. branch_href .. ')* :: New commit from [' .. actor .. '](' .. actor_href .. '): ' .. '\n```\n' .. commit_message .. '\n```'
+    actor_tmpl.actor = data.actor
+    actor_display_tmpl.actor = data.actor
+    push_tmpl.repo = data.repository
+    push_tmpl.new_commit = push.changes[1].new
+    message = tostring(push_tmpl)
 end
 
 local pullrequest = data.pullrequest
 if pullrequest then
-    local actor = data.actor.display_name
-    local repo = pullrequest.destination.repository.full_name
-    local repo_href = pullrequest.destination.repository.links.html.href
-    local href = pullrequest.links.html.href
-    local title = pullrequest.title
-    message = '**[' .. repo .. '](' .. href .. ')** :: New pull request from ' .. actor .. ': ' .. href .. ' (*' .. title .. '*)'
+    actor_tmpl.actor = data.actor
+    actor_display_tmpl.actor = data.actor
+    pullrequest_tmpl.pullrequest = pullrequest
+    pullrequest_tmpl.repo = pullrequest.destination.repository
+    message = tostring(pullrequest_tmpl)
 end
 
 local comment = data.comment
