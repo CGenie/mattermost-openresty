@@ -25,19 +25,21 @@ local pullrequest_tmpl = template.new([[
 pullrequest_tmpl.actor_tmpl = actor_tmpl
 pullrequest_tmpl.actor_display_tmpl = actor_display_tmpl
 local commit_comment_tmpl = template.new([[
-{* actor_tmpl *} **[{* repo.full_name *}]({* repo.links.html.href *})**/*[{* comment.commit.hash *}]({* comment.commit.links.html.href *})* :: [New comment]({* comment.links.html.href *}) from [{* comment.user.display_name *}]({* comment.user.links.html.href *}):
+{* actor_tmpl *} **[{* repo.full_name *}]({* repo.links.html.href *})**/*[{* comment.commit.hash *}]({* comment.commit.links.html.href *})* :: [New comment]({* comment.links.html.href *}) from {* user_display_tmpl *}:
 ```
 {* comment.content.raw *}
 ```
 ]])
 commit_comment_tmpl.actor_tmpl = actor_tmpl
+commit_comment_tmpl.user_display_tmpl = actor_display_tmpl
 local pullrequest_comment_tmpl = template.new([[
-'{* actor_tmpl *} **[{* repo.full_name *}]({* repo.links.html.href *})**/*[PR {* comment.pullrequest.title *}]({* comment.pullrequest.links.html.href *})* :: [New comment]({* comment.links.html.href *}) from [{* comment.user.display_name *}]({* comment.user.links.html.href *}):
+'{* actor_tmpl *} **[{* repo.full_name *}]({* repo.links.html.href *})**/*[PR {* comment.pullrequest.title *}]({* comment.pullrequest.links.html.href *})* :: [New comment]({* comment.links.html.href *}) from {* user_display_tmpl *}:
 ```
 {* comment.content.raw *}
 ```
 ]])
 pullrequest_comment_tmpl.actor_tmpl = actor_tmpl
+pullrequest_comment_tmpl.user_display_tmpl = actor_display_tmpl
 
 if data.actor then
     actor_tmpl.actor = data.actor
@@ -61,6 +63,8 @@ end
 
 local comment = data.comment
 if comment then
+    actor_display_tmpl.actor = comment.user
+
     -- now question is whether the comment is for pull request or for commit
     if comment.commit then
         commit_comment_tmpl.comment = comment
