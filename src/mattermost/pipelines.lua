@@ -23,7 +23,7 @@ if event == 'repo:commit_status_updated' then
     end
 
     local commit_status_tmpl = template.new([[
-{* actor_tmpl *} **[{* repo.full_name *}]({* repo.links.html.href *})** :: [Test **{* commit_status.state *}]({* commit_status.url *}) for branch _{* commit_status.refname *}_ ]])
+{* actor_tmpl *} **[{* repo.full_name *}]({* repo.links.html.href *})** :: [Test **{* commit_status.state *}]({* commit_status.url *})** for branch _{* commit_status.refname *}_ ]])
     commit_status_tmpl.actor_tmpl = actor_tmpl
     commit_status_tmpl.commit_status = data.commit_status
     commit_status_tmpl.repo = data.repository
