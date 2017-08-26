@@ -24,10 +24,27 @@ local pullrequest_tmpl = template.new([[
 {* actor_tmpl *} **[{* repo.full_name *}]({* repo.links.html.href *})** :: New pull request from {* actor_display_tmpl *}: *[{* pullrequest.title *}]({* pullrequest.links.html.href *})* ]])
 pullrequest_tmpl.actor_tmpl = actor_tmpl
 pullrequest_tmpl.actor_display_tmpl = actor_display_tmpl
+local commit_comment_tmpl = template.new([[
+{* actor_tmpl *} **[{* repo.full_name *}]({* repo.links.html.href *})**/*[{* comment.commit.hash *}]({* comment.commit.links.html.href *})* :: [New comment]({* comment.links.html.href *}) from [{* comment.user.display_name *}]({* comment.user.links.html.href *}):
+```
+{* comment.content.raw *}
+```
+]])
+commit_comment_tmpl.actor_tmpl = actor_tmpl
+local pullrequest_comment_tmpl = template.new([[
+'{* actor_tmpl *} **[{* repo.full_name *}]({* repo.links.html.href *})**/*[PR {* comment.pullrequest.title *}]({* comment.pullrequest.links.html.href *})* :: [New comment]({* comment.links.html.href *}) from [{* comment.user.display_name *}]({* comment.user.links.html.href *}):
+```
+{* comment.content.raw *}
+```
+]])
+pullrequest_comment_tmpl.actor_tmpl = actor_tmpl
+
+if data.actor then
+    actor_tmpl.actor = data.actor
+end
 
 local push = data.push
 if push then
-    actor_tmpl.actor = data.actor
     actor_display_tmpl.actor = data.actor
     push_tmpl.repo = data.repository
     push_tmpl.new_commit = push.changes[1].new
@@ -36,7 +53,6 @@ end
 
 local pullrequest = data.pullrequest
 if pullrequest then
-    actor_tmpl.actor = data.actor
     actor_display_tmpl.actor = data.actor
     pullrequest_tmpl.pullrequest = pullrequest
     pullrequest_tmpl.repo = pullrequest.destination.repository
@@ -45,29 +61,17 @@ end
 
 local comment = data.comment
 if comment then
-    local content = comment.content.raw
-    local comment_href = comment.links.html.href
-    local repository = data.repository
-    local repo = repository.full_name
-    local repo_href = repository.links.html.href
-    local user = comment.user.display_name
-    local user_href = comment.user.links.html.href
-
     -- now question is whether the comment is for pull request or for commit
-    local commit = comment.commit
-    if commit then
-        local commit_hash = comment.commit.hash
-        local commit_href = comment.commit.links.html.href
-        local user = comment.user.display_name
-        local user_href = comment.user.links.html.href
-        message = '**[' .. repo .. '](' .. repo_href .. ')**/*[' .. commit_hash .. '](' .. commit_href .. ')* :: [New comment](' .. comment_href .. ') from [' .. user .. '](' .. user_href .. '):\n' .. content
+    if comment.commit then
+        commit_comment_tmpl.comment = comment
+        commit_comment_tmpl.repo = data.repository
+        message = tostring(commit_comment_tmpl)
     end
 
-    local pull_request = comment.pullrequest
-    if pull_request then
-        local title = pull_request.title
-        local pull_request_href = pullrequest.links.html.href
-        message = '**[' .. repo .. '](' .. repo_href .. ')**/*[PR ' .. title .. '](' .. pull_request_href .. ')* :: [New comment](' .. comment_href .. ') from [' .. user .. '](' .. user_href .. '):\n' .. content
+    if comment.pullrequest then
+        pullrequest_comment_tmpl.comment = comment
+        pullrequest_comment_tmpl.repo = data.repository
+        message = tostring(pullrequest_comment_tmpl)
     end
 end
 
