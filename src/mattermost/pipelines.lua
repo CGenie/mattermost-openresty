@@ -1,30 +1,38 @@
-local tools = require "tools"
 local cjson = require "cjson"
+local template = require 'resty.template'
+local tools = require "tools"
 
 local mattermost_url = tools.get_env_variable_with_arg('PIPELINES_MATTERMOST_URL', 'room', nil)
 local mattermost_user = tools.get_env_variable_with_arg('PIPELINES_MATTERMOST_USER', 'user', 'bitbucket')
 
+local headers = ngx.req.get_headers()
+local event = headers["X-Event-Key"]
 local data_ = tools.get_ngx_data()
 local data = cjson.decode(data_)
 local message = nil
+local actor_tmpl = template.new("{% if actor.links.avatar.href then %}![embedded image]({* actor.links.avatar.href *}) {% end %}")
 
-local commit_status = data.commit_status
-
-if commit_status.type ~= 'build' then
-    ngx.log(ngx.ERR, 'This is not a build')
-    ngx.exit(400)
+if data.actor then
+    actor_tmpl.actor = data.actor
 end
 
-local state = commit_status.state
-local url = commit_status.url
-local repository = data.repository
-local branch = commit_status.refname
+if event == 'repo:commit_status_updated' then
+    if data.commit_status.type ~= 'build' then
+        ngx.log(ngx.ERR, 'This is not a build')
+        ngx.exit(400)
+    end
 
-local repo_text = '**[' .. repository.full_name .. '](' .. repository.links.html.href .. ')**'
-local test_text = '[Test **' .. state .. '**](' .. url .. ')'
-local branch_text = '_' .. branch .. '_'
+    local commit_status_tmpl = template.new([[
+{* actor_tmpl *} **[{* repo.full_name *}]({* repo.links.html.href *})** :: [Test **{* commit_status.state *}]({* commit_status.url *}) for branch _{* commit_status.refname *}_ ]])
+    commit_status_tmpl.actor_tmpl = actor_tmpl
+    commit_status_tmpl.commit_status = data.commit_status
+    commit_status_tmpl.repo = data.repository
+    message = tostring(commit_status_tmpl)
+end
 
-message = repo_text .. ' :: ' .. test_text .. ' for branch ' .. branch_text
+if not message then
+    message = 'This is not implemented yet (event ' .. event .. '): ' .. data_
+end
 
 local res, err = tools.send_mattermost_message(
   mattermost_url,
