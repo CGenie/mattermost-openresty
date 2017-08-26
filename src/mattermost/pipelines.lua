@@ -10,11 +10,6 @@ local event = headers["X-Event-Key"]
 local data_ = tools.get_ngx_data()
 local data = cjson.decode(data_)
 local message = nil
-local actor_tmpl = template.new("{% if actor.links.avatar.href then %}![embedded image]({* actor.links.avatar.href *}) {% end %}")
-
-if data.actor then
-    actor_tmpl.actor = data.actor
-end
 
 if event == 'repo:commit_status_updated' then
     if data.commit_status.type ~= 'build' then
@@ -23,7 +18,7 @@ if event == 'repo:commit_status_updated' then
     end
 
     local commit_status_tmpl = template.new([[
-{* actor_tmpl *} **[{* repo.full_name *}]({* repo.links.html.href *})** :: [Test **{* commit_status.state *}]({* commit_status.url *})** for branch _{* commit_status.refname *}_ ]])
+**[{* repo.full_name *}]({* repo.links.html.href *})** :: [Test **{* commit_status.state *}**]({* commit_status.url *}) for branch _{* commit_status.refname *}_ ]])
     commit_status_tmpl.actor_tmpl = actor_tmpl
     commit_status_tmpl.commit_status = data.commit_status
     commit_status_tmpl.repo = data.repository
