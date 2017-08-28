@@ -9,6 +9,7 @@ services:
       - "./nginx.conf:/usr/local/openresty/nginx/conf/nginx.conf"
       - "./src:/code"
     environment:
+      AUTH_TOKEN: '<auth-token>'
       BITBUCKET_MATTERMOST_URL: '<bitbucket-mattermost-hook-url>'
       BITBUCKET_MATTERMOST_USER: 'bitbucket'
       SENTRY_MATTERMOST_URL: '<sentry-mattermost-hook-url>'

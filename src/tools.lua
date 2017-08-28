@@ -51,7 +51,7 @@ function mymodule.get_env_variable_with_arg(base_variable_name, arg_name, defaul
         ngx.log(ngx.ERR, "Key " .. ngx_var .. " not present in JSON " .. base_var)
     end
     ngx.log(ngx.ERR, "Default not defined")
-    ngx.exit(500)
+    ngx.exit(ngx.HTTP_INTERNAL_SERVER_ERROR)
 end
 
 function mymodule.send_mattermost_message(url, text, username)

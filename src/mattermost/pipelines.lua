@@ -14,7 +14,7 @@ local message = nil
 if event == 'repo:commit_status_updated' then
     if data.commit_status.type ~= 'build' then
         ngx.log(ngx.ERR, 'This is not a build')
-        ngx.exit(400)
+        ngx.exit(ngx.HTTP_BAD_REQUEST)
     end
 
     local commit_status_tmpl = template.new([[

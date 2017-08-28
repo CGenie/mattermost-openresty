@@ -2,6 +2,7 @@
 
    * [Mattermost Openresty bridge](#mattermost-openresty-bridge)
       * [Installation](#installation)
+      * [Auth token](#auth-token)
       * [Bitbucket webhooks support](#bitbucket-webhooks-support)
          * [Multiple rooms for multiple Bitbucket configurations](#multiple-rooms-for-multiple-bitbucket-configurations)
       * [Bitbucket Pipelines support](#bitbucket-pipelines-support)
@@ -26,6 +27,16 @@ If you want bots to send custom username to Mattermost, you need to check the
 
 If you want to add custom config, best is to use the `docker-compose.override.yml` file
 (see <https://docs.docker.com/compose/extends/> on how this works).
+
+## Auth Token
+
+It is possible to set the env variable `AUTH_TOKEN` to some string which will be checked
+via the `/auth` endpoint. To pass the token in the URL, specify it in the querystring
+under the `auth=` key:
+
+```
+https://<mattermost-openresty>/mattermost/bitbucket?auth=<auth-token>
+```
 
 ## Bitbucket webhooks support
 
