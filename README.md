@@ -38,6 +38,9 @@ under the `auth=` key:
 https://<mattermost-openresty>/mattermost/bitbucket?auth=<auth-token>
 ```
 
+(This is a primitive authentication method. However 3rd party webhooks like Bibucket don't
+seem to provide even header tokens).
+
 ## Bitbucket webhooks support
 
 In Bitbucket, go to project `Settings -> Webhooks -> Add webhook`. As the webhook URL enter
